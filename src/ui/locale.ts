@@ -17,6 +17,7 @@ export const RESOURCE_LABELS: Record<string, Record<UiLocale, string>> = {
 
 export const UI_TEXT = {
   title: { en: 'ClawLibrary', zh: '龙虾图书馆' },
+  subtitle: { en: "A pixel-game archive for OpenClaw's generated assets and runtime flows.", zh: '面向 OpenClaw 生成资产与运行流的像素游戏风档案馆。' },
   recentActivity: { en: 'Recent Activity', zh: '最近活动' },
   noActivity: { en: 'No recent activity yet.', zh: '暂时还没有最近活动。' },
   archiveLive: { en: 'ARCHIVE LIVE', zh: '实时归档' },
@@ -68,7 +69,48 @@ export const UI_TEXT = {
   active: { en: 'Active', zh: '活跃' },
   idle: { en: 'Idle', zh: '空闲' },
   alert: { en: 'Alert', zh: '告警' },
-  offline: { en: 'Offline', zh: '离线' }
+  offline: { en: 'Offline', zh: '离线' },
+  // Actor status
+  actorWaiting: { en: 'Actor · Waiting', zh: '角色状态 · 等待中' },
+  waitingForLive: { en: 'Waiting for live status.', zh: '正在等待实时状态同步。' },
+  movingTo: { en: 'Moving to', zh: '正在前往' },
+  workingIn: { en: 'Working in', zh: '正在处理' },
+  restingInBreakRoom: { en: 'Resting in Break Room', zh: '正在休息室休息' },
+  holdingAt: { en: 'Holding at', zh: '停留在' },
+  reason: { en: 'Reason', zh: '原因' },
+  notCurrentFocus: { en: 'Not current focus', zh: '当前不是焦点资源' },
+  // Preview notes
+  imageLightbox: { en: 'Image lightbox', zh: '图片放大预览' },
+  markdownRendering: { en: 'Simplified Markdown rendering', zh: '简化 Markdown 渲染' },
+  textPreview: { en: 'Text preview', zh: '文本预览' },
+  truncatedTail: { en: 'showing the latest slice of a large file', zh: '仅载入大文件最后一段' },
+  truncatedHead: { en: 'showing the first slice of a large file', zh: '仅载入文件前一段' },
+  // Modal loading
+  loading: { en: 'Loading', zh: '加载中' },
+  waitingForSnapshot: { en: 'Waiting for OpenClaw snapshot…', zh: '正在等待数据快照…' },
+  loadingResourceItems: { en: 'Loading resource items…', zh: '正在加载资源条目…' },
+  previewFailed: { en: 'Preview failed', zh: '预览失败' },
+  previewUnavailable: { en: 'Preview unavailable', zh: '无法预览' },
+  // Modal status
+  operationalOverview: { en: 'Operational Overview', zh: '运行总览' },
+  needsAttention: { en: 'Needs attention', zh: '需要立即处理' },
+  queuePressure: { en: 'Queue pressure', zh: '队列有积压' },
+  runningSmoothly: { en: 'Running smoothly', zh: '运行稳定' },
+  items: { en: 'items', zh: '项' },
+  showing: { en: 'showing', zh: '显示' },
+  of: { en: 'of', zh: '/' },
+  kind: { en: 'kind', zh: '分类' },
+  searchLabel: { en: 'search', zh: '搜索' },
+  gridView: { en: 'grid view', zh: '网格视图' },
+  listView: { en: 'list view', zh: '列表视图' },
+  sort: { en: 'sort', zh: '排序' },
+  searchItems: { en: 'Search items…', zh: '搜索条目…' },
+  waitingForSnapshotShort: { en: 'waiting for snapshot…', zh: '等待数据快照…' },
+  // Scene defaults
+  warmingUp: { en: 'warming up the library', zh: '图书馆正在启动' },
+  standby: { en: 'Standby', zh: '待命' },
+  coolingClaws: { en: 'cooling claws in the break room', zh: '在休息室里休息' },
+  systemQuiet: { en: 'system quiet, lobster cooling claws', zh: '系统安静，龙虾在休息' }
 } as const;
 
 export function resourceLabel(id: string, locale: UiLocale): string {

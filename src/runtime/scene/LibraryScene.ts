@@ -29,7 +29,7 @@ import { computeVisibleAssetIds } from '../systems/growth';
 import { loadProtocols } from '../systems/protocolStore';
 import { configureTouch } from '../systems/touchController';
 import type { UiLocale } from '../../ui/locale';
-import { resourceLabel } from '../../ui/locale';
+import { resourceLabel, uiText } from '../../ui/locale';
 import { PARTITION_COLORS } from '../../ui/palette';
 
 const INITIAL_GROWTH: GrowthState = {
@@ -134,7 +134,7 @@ export class LibraryScene extends Phaser.Scene {
 
   private liveMode: OpenClawSnapshot['mode'] = 'mock';
   private focusResourceId: ResourcePartitionId = 'break_room';
-  private focusDetail = 'warming up the library';
+  private focusDetail = '';
   private lastTelemetryAt: string | null = null;
   private locale: UiLocale = 'en';
   private debugVisualsVisible = false;
@@ -146,7 +146,7 @@ export class LibraryScene extends Phaser.Scene {
 
   private lastOutput: WorkOutputEvent = {
     stateId: 'idle',
-    stateLabel: 'Standby',
+    stateLabel: '',
     outputCategoryId: 'document',
     outputCategoryLabel: 'Document',
     interfaceId: 'gateway',
@@ -1619,7 +1619,7 @@ export class LibraryScene extends Phaser.Scene {
     if (zoneId === 'break_room') {
       this.lastOutput = this.materializeOutput(this.resolveStateProfile('resting'), {
         resourceId: 'break_room',
-        detailOverride: this.focusDetail || 'cooling claws in the break room'
+        detailOverride: this.focusDetail || uiText('coolingClaws', this.locale)
       });
       this.updateLobsterVisual('idle');
       this.updateResourceAnimations();
@@ -1689,7 +1689,7 @@ export class LibraryScene extends Phaser.Scene {
         if (breakZone) {
           this.beginWorkRoute(breakZone, {
             resourceId: 'break_room',
-            detail: this.focusDetail || 'system quiet, lobster cooling claws'
+            detail: this.focusDetail || uiText('systemQuiet', this.locale)
           });
         }
         return;
@@ -1700,7 +1700,7 @@ export class LibraryScene extends Phaser.Scene {
         this.drawWorkZones();
         this.lastOutput = this.materializeOutput(this.resolveStateProfile('resting'), {
           resourceId: 'break_room',
-          detailOverride: this.focusDetail || 'system quiet, lobster cooling claws'
+          detailOverride: this.focusDetail || uiText('systemQuiet', this.locale)
         });
         this.updateLobsterVisual('idle');
         this.updateResourceAnimations();

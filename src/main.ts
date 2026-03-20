@@ -1024,22 +1024,18 @@ function previewUrlForItem(item: OpenClawResourceItem): string {
 
 function previewNoteForPayload(payload: PreviewPayload): string {
   const kindLabel = payload.kind === 'image'
-    ? (uiLocale === 'zh' ? '图片放大预览' : 'Image lightbox')
+    ? uiText('imageLightbox', uiLocale)
     : payload.kind === 'markdown'
-      ? (uiLocale === 'zh' ? '简化 Markdown 渲染' : 'Simplified Markdown rendering')
+      ? uiText('markdownRendering', uiLocale)
       : payload.kind === 'json'
         ? 'JSON'
-        : (uiLocale === 'zh' ? '文本预览' : 'Text preview');
+        : uiText('textPreview', uiLocale);
 
   if (payload.truncated && payload.readMode === 'tail') {
-    return uiLocale === 'zh'
-      ? `${kindLabel} · 仅载入大文件最后一段`
-      : `${kindLabel} · showing the latest slice of a large file`;
+    return `${kindLabel} · ${uiText('truncatedTail', uiLocale)}`;
   }
   if (payload.truncated) {
-    return uiLocale === 'zh'
-      ? `${kindLabel} · 仅载入文件前一段`
-      : `${kindLabel} · showing the first slice of a large file`;
+    return `${kindLabel} · ${uiText('truncatedHead', uiLocale)}`;
   }
   return kindLabel;
 }
@@ -1669,7 +1665,7 @@ function renderResourceContext(
   const focus = lastSnapshot?.focus;
   const focusText = focus && uiResourceId(focus.resourceId) === resource.id
     ? `${focus.reason} · ${humanizeTelemetryText(focus.detail)}`
-    : (uiLocale === 'zh' ? '当前不是焦点资源' : 'Not current focus');
+    : uiText('notCurrentFocus', uiLocale);
   const contextCard = (label: string, value: string) => `
     <div class="modal-context-card" title="${escapeHtml(value)}">
       <div class="modal-context-label">${label}</div>
@@ -1702,7 +1698,7 @@ function contextSummaryForResource(
   const focus = lastSnapshot?.focus;
   const focusText = focus && uiResourceId(focus.resourceId) === resource.id
     ? `${focus.reason} · ${humanizeTelemetryText(focus.detail)}`
-    : (uiLocale === 'zh' ? '当前不是焦点资源' : 'Not current focus');
+    : uiText('notCurrentFocus', uiLocale);
   const recentEvents = recentEventsForResource(resource.id, 3);
   const lines = [
     `${resource.label}`,
@@ -1910,21 +1906,21 @@ function renderActorLiveStatus(): void {
   const focus = lastSnapshot?.focus;
   if (!status || !focus) {
     hudActorStatus.innerHTML = `
-      <strong>${escapeHtml(uiLocale === 'zh' ? '角色状态 · 等待中' : 'Actor · Waiting')}</strong>
-      <span>${escapeHtml(uiLocale === 'zh' ? '正在等待实时状态同步。' : 'Waiting for live status.')}</span>
+      <strong>${escapeHtml(uiText('actorWaiting', uiLocale))}</strong>
+      <span>${escapeHtml(uiText('waitingForLive', uiLocale))}</span>
     `;
     return;
   }
 
   const zoneLabel = status.zone ?? resourceLabel(uiResourceId(focus.resourceId), uiLocale);
   const headline = status.mode === 'moving'
-    ? (uiLocale === 'zh' ? `正在前往 ${zoneLabel}` : `Moving to ${zoneLabel}`)
+    ? `${uiText('movingTo', uiLocale)} ${zoneLabel}`
     : status.mode === 'working'
-      ? (uiLocale === 'zh' ? `正在处理 ${zoneLabel}` : `Working in ${zoneLabel}`)
+      ? `${uiText('workingIn', uiLocale)} ${zoneLabel}`
       : focus.resourceId === 'break_room'
-        ? (uiLocale === 'zh' ? '正在休息室休息' : 'Resting in Break Room')
-        : (uiLocale === 'zh' ? `停留在 ${zoneLabel}` : `Holding at ${zoneLabel}`);
-  const reasonLabel = uiLocale === 'zh' ? '原因' : 'Reason';
+        ? uiText('restingInBreakRoom', uiLocale)
+        : `${uiText('holdingAt', uiLocale)} ${zoneLabel}`;
+  const reasonLabel = uiText('reason', uiLocale);
   const detail = humanizeTelemetryText(status.detail || focus.detail || '');
 
   hudActorStatus.innerHTML = `
@@ -2096,9 +2092,7 @@ function applyLocaleToChrome(): void {
     hudTitleMain.textContent = uiText('title', uiLocale);
   }
   if (hudTitleSub) {
-    hudTitleSub.textContent = uiLocale === 'zh'
-      ? '面向 OpenClaw 生成资产与运行流的像素游戏风档案馆。'
-      : "A pixel-game archive for OpenClaw's generated assets and runtime flows.";
+    hudTitleSub.textContent = uiText('subtitle', uiLocale);
   }
   if (hudActivityTitle) {
     hudActivityTitle.textContent = uiText('recentActivity', uiLocale);
@@ -2386,7 +2380,7 @@ async function openFolderPath(item: OpenClawResourceItem): Promise<void> {
 async function openPreviewForItem(item: OpenClawResourceItem): Promise<void> {
   const previewPath = item.openPath ?? item.path;
   if (!previewPath) {
-    setModalFeedback(uiLocale === 'zh' ? `无法预览 · ${item.title}` : `Preview unavailable · ${item.title}`, 'error');
+    setModalFeedback(`${uiText('previewUnavailable', uiLocale)} · ${item.title}`, 'error');
     return;
   }
   const kind = previewKindOfPath(previewPath);
@@ -2489,7 +2483,7 @@ function renderPreviewModal(): void {
     previewModalNote.textContent = uiText('loadingPreview', uiLocale);
     previewModalBody.innerHTML = `<div class="preview-empty">${escapeHtml(uiText('loadingPreview', uiLocale))}</div>`;
   } else if (previewState.status === 'error') {
-    previewModalNote.textContent = uiLocale === 'zh' ? '预览失败' : 'Preview failed';
+    previewModalNote.textContent = uiText('previewFailed', uiLocale);
     previewModalBody.innerHTML = `<div class="preview-empty">${escapeHtml(previewState.error)}</div>`;
   } else if (previewState.payload) {
     previewModalNote.textContent = previewNoteForPayload(previewState.payload);
@@ -2586,15 +2580,15 @@ function renderRoomModal(): void {
 
   const resource = getSelectedResource();
   if (!resource) {
-    assetModalTitle.textContent = 'Loading';
+    assetModalTitle.textContent = uiText('loading', uiLocale);
     assetModalTitle.style.color = 'rgba(244, 255, 247, 0.94)';
-    assetModalSub.textContent = 'Waiting for OpenClaw snapshot…';
+    assetModalSub.textContent = uiText('waitingForSnapshot', uiLocale);
     if (assetModalFeedback) {
       assetModalFeedback.textContent = '';
       assetModalFeedback.classList.remove('error');
     }
     if (assetModalSearch) {
-      assetModalSearch.placeholder = 'Search items…';
+      assetModalSearch.placeholder = uiText('searchItems', uiLocale);
     }
     if (assetModalContext) {
       assetModalContext.innerHTML = '';
@@ -2602,7 +2596,7 @@ function renderRoomModal(): void {
     if (assetModalSummary) {
       assetModalSummary.innerHTML = '';
     }
-    assetModalItems.innerHTML = '<div class="modal-empty">waiting for snapshot…</div>';
+    assetModalItems.innerHTML = `<div class="modal-empty">${uiText('waitingForSnapshotShort', uiLocale)}</div>`;
     assetModal.classList.remove('hidden');
     assetModal.setAttribute('aria-hidden', 'false');
     return;
@@ -2630,12 +2624,12 @@ function renderRoomModal(): void {
   assetModalTitle.style.color = PARTITION_CSS_COLORS[resource.id] ?? 'rgba(244, 255, 247, 0.94)';
   const defaults = modalDefaultsForResource(resource.id);
   const filterNotes = [
-    modalKindFilter !== 'all' ? (uiLocale === 'zh' ? `分类 ${kindMenuLabelForResource(resource.id, modalKindFilter)}` : `kind ${modalKindFilter}`) : '',
-    modalSearchQuery.trim() ? (uiLocale === 'zh' ? `搜索 “${modalSearchQuery.trim()}”` : `search “${modalSearchQuery.trim()}”`) : '',
-    modalViewMode !== defaults.viewMode ? (uiLocale === 'zh' ? `${modalViewMode === 'grid' ? '网格' : '列表'}视图` : `${modalViewMode} view`) : '',
-    modalSortMode !== defaults.sortMode ? (uiLocale === 'zh' ? `排序 ${modalSortMode}` : `sort ${modalSortMode}`) : ''
+    modalKindFilter !== 'all' ? `${uiText('kind', uiLocale)} ${kindMenuLabelForResource(resource.id, modalKindFilter)}` : '',
+    modalSearchQuery.trim() ? `${uiText('searchLabel', uiLocale)} “${modalSearchQuery.trim()}”` : '',
+    modalViewMode !== defaults.viewMode ? (modalViewMode === 'grid' ? uiText('gridView', uiLocale) : uiText('listView', uiLocale)) : '',
+    modalSortMode !== defaults.sortMode ? `${uiText('sort', uiLocale)} ${modalSortMode}` : ''
   ].filter(Boolean);
-  assetModalSub.textContent = `${resource.itemCount} items · ${humanizeTelemetryText(resource.summary)}${filterNotes.length ? ` · ${filterNotes.join(' · ')}` : ''} · ${clockOf(resource.lastAccessAt)}`;
+  assetModalSub.textContent = `${resource.itemCount} ${uiText('items', uiLocale)} · ${humanizeTelemetryText(resource.summary)}${filterNotes.length ? ` · ${filterNotes.join(' · ')}` : ''} · ${clockOf(resource.lastAccessAt)}`;
   if (assetModalContext) {
     assetModalContext.innerHTML = renderResourceContext(resource, detailReady ? resourceItems[0] ?? null : null);
   }
@@ -2680,7 +2674,7 @@ function renderRoomModal(): void {
     assetModalItems.classList.toggle('grid', false);
     assetModalItems.innerHTML = detailError
       ? `<div class="modal-empty">${escapeHtml(detailError)}<div class="modal-item-actions"><button class="asset-action" type="button" data-retry-detail="${escapeHtml(resource.id)}">Retry</button></div></div>`
-      : `<div class="modal-empty">${uiLocale === 'zh' ? '正在加载资源条目…' : 'Loading resource items…'}</div>`;
+      : `<div class="modal-empty">${uiText('loadingResourceItems', uiLocale)}</div>`;
     assetModal.classList.remove('hidden');
     assetModal.setAttribute('aria-hidden', 'false');
     return;
@@ -2693,13 +2687,13 @@ function renderRoomModal(): void {
   const items = filteredItems.slice(0, 48);
   const hasActiveFilters = modalKindFilter !== 'all' || modalSearchQuery.trim().length > 0;
   const activeFilterSummary = [
-    modalKindFilter !== 'all' ? (uiLocale === 'zh' ? `分类：${kindMenuLabelForResource(resource.id, modalKindFilter)}` : `kind: ${modalKindFilter}`) : '',
-    modalSearchQuery.trim() ? (uiLocale === 'zh' ? `搜索：“${modalSearchQuery.trim()}”` : `search: “${modalSearchQuery.trim()}”`) : ''
+    modalKindFilter !== 'all' ? `${uiText('kind', uiLocale)}: ${kindMenuLabelForResource(resource.id, modalKindFilter)}` : '',
+    modalSearchQuery.trim() ? `${uiText('searchLabel', uiLocale)}: “${modalSearchQuery.trim()}”` : ''
   ].filter(Boolean).join(' · ');
   const showingLabel = filteredItems.length > items.length
-    ? (uiLocale === 'zh' ? `显示 ${items.length} / ${filteredItems.length}` : `showing ${items.length} of ${filteredItems.length}`)
-    : (uiLocale === 'zh' ? `显示 ${items.length}` : `showing ${items.length}`);
-  assetModalSub.textContent = `${resource.itemCount} ${uiLocale === 'zh' ? '项' : 'items'} · ${showingLabel} · ${humanizeTelemetryText(resource.summary)}${filterNotes.length ? ` · ${filterNotes.join(' · ')}` : ''} · ${clockOf(resource.lastAccessAt)}`;
+    ? `${uiText('showing', uiLocale)} ${items.length} ${uiText('of', uiLocale)} ${filteredItems.length}`
+    : `${uiText('showing', uiLocale)} ${items.length}`;
+  assetModalSub.textContent = `${resource.itemCount} ${uiText('items', uiLocale)} · ${showingLabel} · ${humanizeTelemetryText(resource.summary)}${filterNotes.length ? ` · ${filterNotes.join(' · ')}` : ''} · ${clockOf(resource.lastAccessAt)}`;
   assetModalItems.classList.toggle('grid', modalViewMode === 'grid');
   assetModalItems.innerHTML = items.length
     ? items.map((entry, index) => {
@@ -2722,7 +2716,7 @@ function renderRoomModal(): void {
         const isHeroItem = resource.id === 'agent' && index === 0;
         const isCompactItem = resource.id === 'agent' && index > 0;
         const heroLabel = isHeroItem
-          ? `<div class="modal-item-herohead">${uiLocale === 'zh' ? '运行总览' : 'Operational Overview'}</div>`
+          ? `<div class="modal-item-herohead">${uiText('operationalOverview', uiLocale)}</div>`
           : '';
         const blockedStat = entry.stats?.find((stat) => stat.label === 'blocked');
         const pendingStat = entry.stats?.find((stat) => stat.label === 'pending');
@@ -2730,10 +2724,10 @@ function renderRoomModal(): void {
         const pendingCount = Number(pendingStat?.value ?? 0);
         const heroPriorityTone = blockedCount > 0 ? 'danger' : pendingCount > 0 ? 'warm' : 'calm';
         const heroPriorityText = blockedCount > 0
-          ? (uiLocale === 'zh' ? '需要立即处理' : 'Needs attention')
+          ? uiText('needsAttention', uiLocale)
           : pendingCount > 0
-            ? (uiLocale === 'zh' ? '队列有积压' : 'Queue pressure')
-            : (uiLocale === 'zh' ? '运行稳定' : 'Running smoothly');
+            ? uiText('queuePressure', uiLocale)
+            : uiText('runningSmoothly', uiLocale);
         const heroAlert = isHeroItem
           ? `
             <div class="modal-item-heroalert">
