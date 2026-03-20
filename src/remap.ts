@@ -23,12 +23,12 @@ const backgrounds: BackgroundOption[] = [
   {
     id: 'default-floor',
     label: 'Default Floor',
-    src: '/assets/packs/default/2026-03-09/scene-floor.png'
+    src: 'assets/packs/default/2026-03-09/scene-floor.png'
   },
   {
     id: 'default-objects',
     label: 'Default Objects',
-    src: '/assets/packs/default/2026-03-09/scene-objects.png'
+    src: 'assets/packs/default/2026-03-09/scene-objects.png'
   }
 ];
 

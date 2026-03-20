@@ -42,7 +42,7 @@ const CAMERA_SCROLL_X = 0;
 
 const LEGACY_BACKGROUND = {
   textureKey: 'll3-master-layout-v1',
-  path: '/assets/generated/ll3/2026-03-07/ll3-master-layout-v1.png',
+  path: 'assets/generated/ll3/2026-03-07/ll3-master-layout-v1.png',
   displaySize: { width: 1920, height: 1072 },
   anchor: { x: 960, y: 540 }
 } as const;
@@ -408,14 +408,18 @@ export class LibraryScene extends Phaser.Scene {
     }
     this.queuedTextureKeys.add(asset.textureKey);
 
+    const resolvedPath = asset.path.startsWith('/')
+      ? asset.path
+      : `${import.meta.env.BASE_URL}${asset.path}`;
+
     const inferredKind = asset.kind ?? (asset.path.toLowerCase().endsWith('.svg') ? 'svg' : 'image');
     if (inferredKind === 'svg') {
-      this.load.svg(asset.textureKey, asset.path);
+      this.load.svg(asset.textureKey, resolvedPath);
       return;
     }
 
     if (inferredKind === 'spritesheet') {
-      this.load.spritesheet(asset.textureKey, asset.path, {
+      this.load.spritesheet(asset.textureKey, resolvedPath, {
         frameWidth: asset.frameWidth ?? 1,
         frameHeight: asset.frameHeight ?? 1,
         endFrame: Math.max(0, (asset.frameCount ?? 1) - 1),
@@ -425,7 +429,7 @@ export class LibraryScene extends Phaser.Scene {
       return;
     }
 
-    this.load.image(asset.textureKey, asset.path);
+    this.load.image(asset.textureKey, resolvedPath);
   }
 
   private spawnLegacyBackground(): void {

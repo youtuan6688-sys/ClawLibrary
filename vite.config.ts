@@ -490,6 +490,7 @@ function telemetryMiddleware() {
 }
 
 export default defineConfig({
+  base: '/2026/',
   plugins: [
     {
       name: 'openclaw-telemetry-bridge',
@@ -506,6 +507,7 @@ export default defineConfig({
   },
   server: {
     host: clawlibraryConfig.server.host,
-    port: clawlibraryConfig.server.port
+    port: clawlibraryConfig.server.port,
+    allowedHosts: 'all'
   }
 });
